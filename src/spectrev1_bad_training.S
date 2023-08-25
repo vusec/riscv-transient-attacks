@@ -1,24 +1,22 @@
 #------------------------------------------------------------------------------
-# Spectrev1 with static prediction.
-#
-# Victim reads memory out-of-bounds abusing static branch prediction, which by
-# default predicts previously unseen branches as not-taken.
+# Spectrev1 with insufficient training.
 #------------------------------------------------------------------------------
-.equ ARR_SIZE, 0x20
-.equ OOB_IDX, 0x100
-.equ NON_POWER_OF_2, 6
 
-#
-# Attacker: call the victim with out-of-bounds index.
-#
+.equ N_TRAINING_ROUNDS,  4
+.equ NON_POWER_OF_2, 6
+.equ ARR_SIZE, 0x20
+.equ OOB_IDX, 0x180
+
+
 .text
 attacker:
   li  a0, 0
   nop     # HACK: align code for the detector.
 
-  # HACK: call the victim once so that the detector does not discard the branch
-  # fallthrough.
+  # Training: call the victim with a0 = 0.
+  .rept N_TRAINING_ROUNDS
   call victim
+  .endr
 
   # Speculation: call the victim with out-of-bounds index.
   li  a0, OOB_IDX
@@ -35,6 +33,7 @@ attacker:
 .align 4
 victim:
   # Calculate address of arr[a0].
+
 #ifdef NO_DATA
   li t0, 0x80001000
 #else
@@ -49,15 +48,16 @@ victim:
   mul a0, a0, t1
   div a0, a0, t1
 
-  # Bounds check: skip if `a0` is greater than 0x20.
+  # Bounds check: jump if `a0` is less than 0x20.
   li t2, ARR_SIZE
-  bge a0, t2, func_end # <-- statically predicted not-taken
-    # Branch not taken: dereference the address.
+  ble a0, t2, spec
+    # Branch not taken: return.
+    ret
+  .align 4
+  spec:
+    # Branch taken: dereference the address.
     lw t0, 0(t0)
     addi t0, t0, 0x1
-  .align 4
-  func_end:
-    # Branch taken: just return.
     ret
 
 #ifndef NO_DATA
@@ -124,3 +124,4 @@ arr:
   .dword 0x0
   .endr
 #endif
+

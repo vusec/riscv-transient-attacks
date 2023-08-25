@@ -122,4 +122,10 @@ probe:
   .dword 0x0000000deadbeef
   .dword 0x0000000deadbeef
   .dword 0x0000000deadbeef
+#else
+  #padding
+  .rep 64
+  .dword 0x0
+  .endr
 #endif
+

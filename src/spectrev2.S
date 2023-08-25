@@ -156,4 +156,10 @@ arr:
  .dword 0x00000000deadbeef
  .dword 0x00000000deadbeef
  .dword 0x00000000deadbeef
+#else
+  #padding
+  .rep 64
+  .dword 0x0
+  .endr
 #endif
+
