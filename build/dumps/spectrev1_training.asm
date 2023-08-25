@@ -1,5 +1,5 @@
 
-handcrafted/spectrev1_static.riscv:     file format elf64-littleriscv
+build/spectrev1_training.riscv:     file format elf64-littleriscv
 
 
 Disassembly of section .text:
@@ -7,35 +7,48 @@ Disassembly of section .text:
 0000000080000000 <attacker>:
     80000000:	4501                	li	a0,0
     80000002:	0001                	nop
-    80000004:	01c000ef          	jal	ra,80000020 <victim>
-    80000008:	10000513          	li	a0,256
-    8000000c:	014000ef          	jal	ra,80000020 <victim>
+    80000004:	03c000ef          	jal	ra,80000040 <victim>
+    80000008:	038000ef          	jal	ra,80000040 <victim>
+    8000000c:	034000ef          	jal	ra,80000040 <victim>
+    80000010:	030000ef          	jal	ra,80000040 <victim>
+    80000014:	02c000ef          	jal	ra,80000040 <victim>
+    80000018:	028000ef          	jal	ra,80000040 <victim>
+    8000001c:	18000513          	li	a0,384
+    80000020:	020000ef          	jal	ra,80000040 <victim>
+    80000024:	00000013          	nop
+    80000028:	00000013          	nop
+    8000002c:	00000013          	nop
 
-0000000080000010 <end>:
-    80000010:	0000                	unimp
-    80000012:	0001                	nop
-    80000014:	00000013          	nop
-    80000018:	00000013          	nop
-    8000001c:	00000013          	nop
+0000000080000030 <end>:
+    80000030:	0000                	unimp
+    80000032:	0001                	nop
+    80000034:	00000013          	nop
+    80000038:	00000013          	nop
+    8000003c:	00000013          	nop
 
-0000000080000020 <victim>:
-    80000020:	00001297          	auipc	t0,0x1
-    80000024:	fe028293          	addi	t0,t0,-32 # 80001000 <arr>
-    80000028:	92aa                	add	t0,t0,a0
-    8000002a:	4319                	li	t1,6
-    8000002c:	02650533          	mul	a0,a0,t1
-    80000030:	02654533          	div	a0,a0,t1
-    80000034:	02650533          	mul	a0,a0,t1
-    80000038:	02654533          	div	a0,a0,t1
-    8000003c:	02000393          	li	t2,32
-    80000040:	00755863          	bge	a0,t2,80000050 <func_end>
-    80000044:	0002a283          	lw	t0,0(t0)
-    80000048:	0285                	addi	t0,t0,1
-    8000004a:	00000013          	nop
-    8000004e:	0001                	nop
+0000000080000040 <victim>:
+    80000040:	00001297          	auipc	t0,0x1
+    80000044:	fc028293          	addi	t0,t0,-64 # 80001000 <arr>
+    80000048:	92aa                	add	t0,t0,a0
+    8000004a:	4319                	li	t1,6
+    8000004c:	02650533          	mul	a0,a0,t1
+    80000050:	02654533          	div	a0,a0,t1
+    80000054:	02650533          	mul	a0,a0,t1
+    80000058:	02654533          	div	a0,a0,t1
+    8000005c:	02000393          	li	t2,32
+    80000060:	00a3d863          	bge	t2,a0,80000070 <spec>
+    80000064:	8082                	ret
+    80000066:	00000013          	nop
+    8000006a:	00000013          	nop
+    8000006e:	0001                	nop
 
-0000000080000050 <func_end>:
-    80000050:	8082                	ret
+0000000080000070 <spec>:
+    80000070:	0002a283          	lw	t0,0(t0)
+    80000074:	0285                	addi	t0,t0,1
+    80000076:	8082                	ret
+    80000078:	0000                	unimp
+    8000007a:	0000                	unimp
+    8000007c:	0000                	unimp
 
 Disassembly of section .data:
 
@@ -165,58 +178,58 @@ Disassembly of section .data:
     800010fa:	ffff                	0xffff
     800010fc:	ffff                	0xffff
     800010fe:	ffff                	0xffff
-    80001100:	deadbeef          	jal	t4,7ffdc6ea <OOB_IDX+0x7ffdc5ea>
+    80001100:	deadbeef          	jal	t4,7ffdc6ea <OOB_IDX+0x7ffdc56a>
     80001104:	0000                	unimp
     80001106:	0000                	unimp
-    80001108:	deadbeef          	jal	t4,7ffdc6f2 <OOB_IDX+0x7ffdc5f2>
+    80001108:	deadbeef          	jal	t4,7ffdc6f2 <OOB_IDX+0x7ffdc572>
     8000110c:	0000                	unimp
     8000110e:	0000                	unimp
-    80001110:	deadbeef          	jal	t4,7ffdc6fa <OOB_IDX+0x7ffdc5fa>
+    80001110:	deadbeef          	jal	t4,7ffdc6fa <OOB_IDX+0x7ffdc57a>
     80001114:	0000                	unimp
     80001116:	0000                	unimp
-    80001118:	deadbeef          	jal	t4,7ffdc702 <OOB_IDX+0x7ffdc602>
+    80001118:	deadbeef          	jal	t4,7ffdc702 <OOB_IDX+0x7ffdc582>
     8000111c:	0000                	unimp
     8000111e:	0000                	unimp
-    80001120:	deadbeef          	jal	t4,7ffdc70a <OOB_IDX+0x7ffdc60a>
+    80001120:	deadbeef          	jal	t4,7ffdc70a <OOB_IDX+0x7ffdc58a>
     80001124:	0000                	unimp
     80001126:	0000                	unimp
-    80001128:	deadbeef          	jal	t4,7ffdc712 <OOB_IDX+0x7ffdc612>
+    80001128:	deadbeef          	jal	t4,7ffdc712 <OOB_IDX+0x7ffdc592>
     8000112c:	0000                	unimp
     8000112e:	0000                	unimp
-    80001130:	deadbeef          	jal	t4,7ffdc71a <OOB_IDX+0x7ffdc61a>
+    80001130:	deadbeef          	jal	t4,7ffdc71a <OOB_IDX+0x7ffdc59a>
     80001134:	0000                	unimp
     80001136:	0000                	unimp
-    80001138:	deadbeef          	jal	t4,7ffdc722 <OOB_IDX+0x7ffdc622>
+    80001138:	deadbeef          	jal	t4,7ffdc722 <OOB_IDX+0x7ffdc5a2>
     8000113c:	0000                	unimp
     8000113e:	0000                	unimp
-    80001140:	deadbeef          	jal	t4,7ffdc72a <OOB_IDX+0x7ffdc62a>
+    80001140:	deadbeef          	jal	t4,7ffdc72a <OOB_IDX+0x7ffdc5aa>
     80001144:	0000                	unimp
     80001146:	0000                	unimp
-    80001148:	deadbeef          	jal	t4,7ffdc732 <OOB_IDX+0x7ffdc632>
+    80001148:	deadbeef          	jal	t4,7ffdc732 <OOB_IDX+0x7ffdc5b2>
     8000114c:	0000                	unimp
     8000114e:	0000                	unimp
-    80001150:	deadbeef          	jal	t4,7ffdc73a <OOB_IDX+0x7ffdc63a>
+    80001150:	deadbeef          	jal	t4,7ffdc73a <OOB_IDX+0x7ffdc5ba>
     80001154:	0000                	unimp
     80001156:	0000                	unimp
-    80001158:	deadbeef          	jal	t4,7ffdc742 <OOB_IDX+0x7ffdc642>
+    80001158:	deadbeef          	jal	t4,7ffdc742 <OOB_IDX+0x7ffdc5c2>
     8000115c:	0000                	unimp
     8000115e:	0000                	unimp
-    80001160:	deadbeef          	jal	t4,7ffdc74a <OOB_IDX+0x7ffdc64a>
+    80001160:	deadbeef          	jal	t4,7ffdc74a <OOB_IDX+0x7ffdc5ca>
     80001164:	0000                	unimp
     80001166:	0000                	unimp
-    80001168:	deadbeef          	jal	t4,7ffdc752 <OOB_IDX+0x7ffdc652>
+    80001168:	deadbeef          	jal	t4,7ffdc752 <OOB_IDX+0x7ffdc5d2>
     8000116c:	0000                	unimp
     8000116e:	0000                	unimp
-    80001170:	deadbeef          	jal	t4,7ffdc75a <OOB_IDX+0x7ffdc65a>
+    80001170:	deadbeef          	jal	t4,7ffdc75a <OOB_IDX+0x7ffdc5da>
     80001174:	0000                	unimp
     80001176:	0000                	unimp
-    80001178:	deadbeef          	jal	t4,7ffdc762 <OOB_IDX+0x7ffdc662>
+    80001178:	deadbeef          	jal	t4,7ffdc762 <OOB_IDX+0x7ffdc5e2>
     8000117c:	0000                	unimp
     8000117e:	0000                	unimp
-    80001180:	deadbeef          	jal	t4,7ffdc76a <OOB_IDX+0x7ffdc66a>
+    80001180:	deadbeef          	jal	t4,7ffdc76a <OOB_IDX+0x7ffdc5ea>
     80001184:	0000                	unimp
     80001186:	0000                	unimp
-    80001188:	deadbeef          	jal	t4,7ffdc772 <OOB_IDX+0x7ffdc672>
+    80001188:	deadbeef          	jal	t4,7ffdc772 <OOB_IDX+0x7ffdc5f2>
     8000118c:	0000                	unimp
     8000118e:	0000                	unimp
 

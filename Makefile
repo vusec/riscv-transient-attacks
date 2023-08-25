@@ -4,31 +4,53 @@ RISCV_OBJDUMP:=riscv64-unknown-elf-objdump --disassemble-all --disassemble-zeroe
 ELF2HEX:=/chipyard/scripts/smartelf2hex.sh
 HEX2BIN:=/scripts/hex2bin
 
+BUILDDIR = build
+BINDIR = $(BUILDDIR)/bins
+DUMPDIR = $(BUILDDIR)/dumps
+NODATADIR = $(BUILDDIR)/nodata
+SRCDIR = src
+
 # Programs to compile
-src = $(wildcard handcrafted/*.S) $(wildcard fuzzer/*.S)  $(wildcard ./*.S)
-DUMPS = $(src:.S=.asm)
-BINS = $(src:.S=.bin)
+SOURCES = $(wildcard src/*.S)
+
+DUMPS = $(patsubst $(SRCDIR)/%.S,$(DUMPDIR)/%.asm,$(SOURCES))
+BINS = $(patsubst $(SRCDIR)/%.S,$(BINDIR)/%.bin,$(SOURCES))
+NODATABINS = $(patsubst $(SRCDIR)/%.S,$(NODATADIR)/%.bin,$(SOURCES))
 
 .PHONY: all
-all: $(BINS) $(DUMPS)
+all: $(BINS) $(DUMPS) $(NODATABINS)
+
 bin: $(BINS)
+nodata: $(NODATABINS)
 dumps: $(DUMPS)
 
-%.bin: %.hex
+$(BINDIR)/%.bin: $(BUILDDIR)/%.hex
 	$(HEX2BIN) $< $@
 
-%.hex: %.riscv
+$(BUILDDIR)/%.hex: $(BUILDDIR)/%.riscv
 	$(ELF2HEX) $< > $@
 
-%.asm: %.riscv
+$(DUMPDIR)/%.asm: $(BUILDDIR)/%.riscv
 	$(RISCV_OBJDUMP) $< > $@
 
-%.riscv: %.S
+$(BUILDDIR)/%.riscv: $(SRCDIR)/%.S
 	$(RISCV_GCC) $(RISCV_FLAGS) $< -o $@
+
+
+$(NODATADIR)/%.bin: $(NODATADIR)/%.hex
+	$(HEX2BIN) $< $@
+
+$(NODATADIR)/%.hex: $(NODATADIR)/%.riscv
+	$(ELF2HEX) $< > $@
+
+$(NODATADIR)/%.riscv: $(SRCDIR)/%.S
+	$(RISCV_GCC) $(RISCV_FLAGS) -DNO_DATA $< -o $@
 
 .PHONY: clean
 
 clean:
-	rm -f *.asm *.hex *.bin *.riscv
-	cd handcrafted && rm -f *.asm *.hex *.bin *.riscv
-	cd fuzzer && rm -f *.asm *.hex *.bin *.riscv
+	rm -rf $(BUILDDIR)
+	mkdir -p $(BUILDDIR)
+	mkdir -p $(DUMPDIR)
+	mkdir -p $(BINDIR)
+	mkdir -p $(NODATADIR)

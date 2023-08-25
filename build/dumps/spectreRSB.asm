@@ -1,5 +1,5 @@
 
-handcrafted/spectreRSB.riscv:     file format elf64-littleriscv
+build/spectreRSB.riscv:     file format elf64-littleriscv
 
 
 Disassembly of section .text:

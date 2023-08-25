@@ -35,7 +35,11 @@ attacker:
 .align 4
 victim:
   # Calculate address of arr[a0].
+#ifdef NO_DATA
+  li t0, 0x80001000
+#else
   lla t0, arr
+#endif
   add t0, t0, a0
 
   # Slow down branch with mul/div by a non-power-of-two.
@@ -56,6 +60,7 @@ victim:
     # Branch taken: just return.
     ret
 
+#ifndef NO_DATA
 .data
 arr:
   # cache line 0 and 1 (read architecturally)
@@ -113,3 +118,4 @@ arr:
  .dword 0x00000000deadbeef
  .dword 0x00000000deadbeef
  .dword 0x00000000deadbeef
+#endif

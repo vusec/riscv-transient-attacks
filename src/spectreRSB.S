@@ -6,8 +6,13 @@
 
 .text
 context_1:
+#ifdef NO_DATA
+  li s0, 0x80001000
+  li s1, 0x80001080
+#else
   lla s0, arr
   lla s1, arr2
+#endif
   li a0, 8
   nop
 
@@ -48,6 +53,7 @@ context_2:
   unimp
 
 
+#ifndef NO_DATA
 .data
 arr:
   # cache line 0 and 1 (read architecturally)
@@ -89,3 +95,4 @@ arr2:
  .dword 0x00000000deadbeef
  .dword 0x00000000deadbeef
 
+#endif

@@ -10,7 +10,7 @@
 .equ N_TRAINING_ROUNDS,  6
 .equ NON_POWER_OF_2, 6
 .equ ARR_SIZE, 0x20
-.equ OOB_IDX, 0x100
+.equ OOB_IDX, 0x180
 
 #
 # Attacker: call the victim function several times with `a0` in-bounds, and
@@ -42,7 +42,12 @@ attacker:
 .align 4
 victim:
   # Calculate address of arr[a0].
+
+#ifdef NO_DATA
+  li t0, 0x80001000
+#else
   lla t0, arr
+#endif
   add t0, t0, a0
 
   # Slow down branch with mul/div by a non-power-of-two.
@@ -64,6 +69,7 @@ victim:
     addi t0, t0, 0x1
     ret
 
+#ifndef NO_DATA
 .data
 arr:
   # cache line 0 and 1 (read architecturally)
@@ -121,3 +127,4 @@ arr:
  .dword 0x00000000deadbeef
  .dword 0x00000000deadbeef
  .dword 0x00000000deadbeef
+#endif

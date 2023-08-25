@@ -7,9 +7,16 @@
 
 .text
 setup:
+
+#ifdef NO_DATA
+  li s0, 0x80001000
+  li s1, 0x80001080
+  li s2, 0x80001100
+#else
   lla s0, public
   lla s1, secret
   lla s2, probe
+#endif
 
   # Load secret in a register.
   ld t0, 0(s1)
@@ -40,6 +47,7 @@ attack:
   # Illegal instruction: end of test case.
   unimp
 
+#ifndef NO_DATA
 .data
 public:
   # cache line 0 and 1 (stored architecturally)
@@ -114,3 +122,4 @@ probe:
   .dword 0x0000000deadbeef
   .dword 0x0000000deadbeef
   .dword 0x0000000deadbeef
+#endif
