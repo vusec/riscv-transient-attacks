@@ -1,0 +1,74 @@
+lla s0, thedata
+
+li t1, 1
+li t0, 2
+
+.rep 1400
+nop
+.endr
+
+.rep {{ pre_loop }}
+nop
+.endr
+
+.align 4
+loop:
+auipc ra, 0
+
+.rep {{ pre_branch }}
+nop
+.endr
+
+.rep 16
+mul t0, t0, t1
+.endr
+
+beqz t0, speculative
+beqz t0, speculative
+beqz t0, speculative
+beqz t0, speculative
+beqz t0, speculative
+beqz t0, speculative
+beqz t0, speculative
+
+.rep {{ pre_jump }}
+nop
+.endr
+
+# .rep 1
+# addi zero, zero, 0
+# .endr
+# j theret
+
+# Padding.
+# .rep 10
+# nop
+# .endr
+
+# j loop
+# .align 4
+# theret:
+
+ret
+
+
+# Padding.
+.rep 80
+nop
+.endr
+unimp
+
+
+# ----------- Speculative load.
+speculative:
+ld t0, 0(s0)
+
+# Padding
+# .rep 1124
+# .dword 0
+# .endr
+
+# ------------- Data loaded speculatively.
+.align 16
+thedata:
+.dword 0xcacacafedeadbeef
