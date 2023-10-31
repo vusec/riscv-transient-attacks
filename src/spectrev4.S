@@ -22,7 +22,7 @@ attack:
   # Load from s0, reodered before the store.
   ld t0, 0(s0)
   # Use the secret as index.
-  andi t0, t0, 0xFFFF
+  andi t0, t0, 0xFF
   add  t0, t0, s2
   # Second load: leaks the secret.
   ld t1, 0(t0)
