@@ -4,8 +4,15 @@
 
 .text
 setup:
+#ifdef NO_DATA
+  li s0, 0x80001000
+  li s1, 0x80001040
+  li t1, 0x80
+  sd t1, 0(s0)
+#else
   lla s0, secret
   lla s1, flush_reload_buffer
+#endif
 
 attack:
   mv t2, s0
@@ -32,6 +39,7 @@ attack:
   # Illegal instruction: end of test case.
   unimp
 
+#ifndef NO_DATA
 .data
 secret:
   # cache line 0 and 1
@@ -104,3 +112,9 @@ flush_reload_buffer:
   .dword 0x0000000deadbeef
   .dword 0x0000000deadbeef
   .dword 0x0000000deadbeef
+#else
+  #padding
+  .rep 64
+  .dword 0x0
+  .endr
+#endif
