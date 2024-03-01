@@ -3,9 +3,16 @@
 #------------------------------------------------------------------------------
 
 .text
-setup:
+#ifndef NO_DATA
   lla s0, secret
   lla s1, flush_reload_buffer
+#else
+  li s0, 0x80006000
+  li s1, 0x80006080
+  li t0, 0xdeadbeef
+  sd t0, 0(s0)
+  fence
+#endif
 
 attack:
   mv t2, s0
@@ -31,6 +38,12 @@ attack:
   unimp
 
 .data
+padding:
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+  .dword 0x000000000000000
+
 secret:
   # cache line 0 and 1
   .dword 0xdeadbeefdeadbeef  # <- SECRET, overwritten by store

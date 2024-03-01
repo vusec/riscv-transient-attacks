@@ -4,14 +4,15 @@
 
 .text
 setup:
-#ifdef NO_DATA
-  li s0, 0x80001000
-  li s1, 0x80001040
-  li t1, 0x80
-  sd t1, 0(s0)
-#else
+#ifndef NO_DATA
   lla s0, secret
   lla s1, flush_reload_buffer
+#else
+  li s0, 0x80006000
+  li s1, 0x80007000
+  # li t0, 0xdeadbeef
+  # sd t0, 0(s0)
+  # fence
 #endif
 
 attack:
@@ -24,8 +25,8 @@ attack:
   div t2, t2, t1
   mul t2, t2, t1
   div t2, t2, t1
-  # Zero-out memory in s0.
-  li t1, 0
+  # Store new value in [s0].
+  li t1, 0x80
   sd t1, 0(t2)
 
   # Load from s0, reodered before the store.
@@ -112,6 +113,8 @@ flush_reload_buffer:
   .dword 0x0000000deadbeef
   .dword 0x0000000deadbeef
   .dword 0x0000000deadbeef
+
+
 #else
   #padding
   .rep 64

@@ -7,18 +7,14 @@
 .text
 context_1:
 #ifdef NO_DATA
-  li s0, 0x80001000
-  li s1, 0x80001080
+  li s0, 0x80006000
+  li s1, 0x80006080
 #else
   lla s0, arr
   lla s1, arr2
 #endif
   li a0, 8
   nop
-
-  # HACK: We need to execute the spec code at least once or the detector will
-  # wipe it out.
-  call spec_code
 
   # Call the victim.
   call context_switch

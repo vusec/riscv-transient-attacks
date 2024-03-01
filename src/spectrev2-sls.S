@@ -32,11 +32,11 @@ setup:
 
 attacker:
   # Training: call leak function with in-bounds index.
-  .rept TRAINING_ROUNDS
-  li  a0, LEAK_FUNC_IDX
-  mv a1, s1
-  call victim
-  .endr
+  # .rept TRAINING_ROUNDS
+  # li  a0, LEAK_FUNC_IDX
+  # mv a1, s1
+  # call victim
+  # .endr
 
   # Attack: call legit function with out-of-bounds index. The victim
   # will speculatively jump to the leak function instead of the legit one.
@@ -63,6 +63,8 @@ victim:
   add t0, s0, a0
   ld  t1, 0(t0)
 
+  mv t5, s0
+
   # Slow down jump with mul/div by a non-power-of-two.
   li t2, 6
   mul t1, t1, t2
@@ -70,7 +72,11 @@ victim:
   mul t1, t1, t2
   div t1, t1, t2
   # Indirect jump.
+  .align 4
   jalr ra, t1
+
+  # Load from a1 (changed by callee)
+  lw t0, 0(t5)
 
   # Restore ret address.
   mv  ra, s2
@@ -79,6 +85,7 @@ victim:
 # Legit target: do nothing.
 .align 4
 legit_target:
+  mv t5, s1
   ret
 
 # Leak target: access `a1`.

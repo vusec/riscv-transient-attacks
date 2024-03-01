@@ -13,12 +13,6 @@
 #
 .text
 attacker:
-  li  a0, 0
-  nop     # HACK: align code for the detector.
-
-  # HACK: call the victim once so that the detector does not discard the branch
-  # fallthrough.
-  call victim
 
   # Speculation: call the victim with out-of-bounds index.
   li  a0, OOB_IDX
@@ -36,7 +30,7 @@ attacker:
 victim:
   # Calculate address of arr[a0].
 #ifdef NO_DATA
-  li t0, 0x80001000
+  li t0, 0x80006000
 #else
   lla t0, arr
 #endif
@@ -44,6 +38,10 @@ victim:
 
   # Slow down branch with mul/div by a non-power-of-two.
   li t1, NON_POWER_OF_2
+  mul a0, a0, t1
+  div a0, a0, t1
+  mul a0, a0, t1
+  div a0, a0, t1
   mul a0, a0, t1
   div a0, a0, t1
   mul a0, a0, t1
