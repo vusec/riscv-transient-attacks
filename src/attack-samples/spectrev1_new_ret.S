@@ -1,15 +1,11 @@
-init:
-#ifdef NO_DATA
-  li s0, 0x80006000
-#else
-  lla s0, thedata
-#endif
+#include "memcfg.h"
+
+.text
+text:
+    li s0, UDATA
 
     li t1, 1
     li t0, 2
-
-    li t2, 0
-    li t3, 40
 
     # .rep 1400
     # nop
@@ -41,13 +37,4 @@ speculative:
 ld t0, 0(s0)
 
 # ------------- Data loaded speculatively.
-#ifndef NO_DATA
-.data
-thedata:
-.dword 0xcacacafedeadbeef
-#else
-  #padding
-  .rep 64
-  .dword 0x0
-  .endr
-#endif
+#include "data.h"

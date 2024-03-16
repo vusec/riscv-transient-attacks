@@ -1,9 +1,17 @@
-init:
-    lla s0, thedata
+.text
+text:
+#ifdef NO_DATA
+  li s0, 0x80009000
+#else
+  li s0, 0x80009000
+
+  # lla s0, data
+#endif
+
     li t1, 1
     li t0, 2
     li t2, 0
-    li t3, 20
+    li t3, 8
 
     # .rep 2400
     # nop
@@ -28,6 +36,8 @@ nop
 func1:
 
     # Slow down branch.
+    mul t0, t0, t1
+    mul t0, t0, t1
     mul t0, t0, t1
     mul t0, t0, t1
     mul t0, t0, t1
@@ -64,9 +74,20 @@ nop
 # ----------- Speculative load.
 speculative:
 ld t0, 0(s0)
+ret
 
 # ------------- Data loaded speculatively.
-.align 16
-thedata:
-.dword 0xcacacafedeadbeef
-
+#ifndef NO_DATA
+.data
+data:
+.dword 0xcacacafedeadbee0
+.dword 0xcacacafedeadbee1
+.dword 0xcacacafedeadbee2
+.dword 0xcacacafedeadbee3
+.dword 0xcacacafedeadbee4
+#else
+  #padding
+  .rep 64
+  .dword 0x0
+  .endr
+#endif

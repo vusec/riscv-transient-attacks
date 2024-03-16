@@ -1,3 +1,5 @@
+#include "memcfg.h"
+
 .text
 setup:
   lla s1, ret_target
@@ -31,3 +33,5 @@ attack:
 ret_target:
   ld t0, 0x80(s0)
   unimp
+
+#include "data.h"

@@ -1,5 +1,4 @@
-./build/**/*
-./build/*
+build
 *.hex
 *.crash.json
 *.bin.bin
