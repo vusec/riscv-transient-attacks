@@ -1,42 +1,19 @@
-srai a4, s2, 53
-lui a6, 0x4000
-lwu ra, 128(s2)
-lwu ra, 128(s2)
-lwu ra, 128(s2)
-lwu ra, 128(s2)
-lwu ra, 128(s2)
-lwu ra, 128(s2)
-lwu ra, 128(s2)
-lwu ra, 128(s2)
-lwu ra, 128(s2)
-lwu ra, 128(s2)
-lwu ra, 128(s2)
-sw s2, -537(ra)
-lwu ra, 932(s2)
-lwu ra, 932(a6)
-lwu ra, 932(s2)
-lwu ra, 932(s2)
-lwu ra, 932(s2)
-srlw t5, s2, ra
-# srai a4, t4, 2
-# lwu ra, 932(s2)
-# lwu ra, 932(s2)
-# lwu ra, 932(s2)
-# lwu ra, 932(s2)
-# lwu ra, 932(s2)
-# lwu ra, 932(s2)
-# lwu ra, 932(s2)
-# lwu ra, 932(ra)
-# sltu s2, s11, ra
-# lbu ra, 1024(tp)
-# lwu ra, 932(s2)
-# sh s0, -1465(ra)
-# subw a1, ra, ra
-# subw a1, ra, ra
-# sw a5, -415(ra)
-# subw a1, t2, ra
-# slliw t5, ra, 1
-# # bgt ra, a1, -2460 # 0x800036fa
-# slliw t5, ra, 1
-# lwu ra, 932(s2)
-unimp
+lhu tp, 212(tp)
+lbu tp, 212(s10)
+sllw s11, tp, s8
+auipc sp, 21478 # 0x800c
+sb sp, 1024(s0)
+add s0, s1, t0
+lw tp, 1024(a6)
+lw tp, 1024(t0) # <---- memory ordering fault
+lw tp, 1024(t0)
+sllw t2, tp, s8
+lh a6, 1024(t2) # <---- taint
+sllw s11, tp, s7
+addi a4, s11, -2032
+sw zero, 0(a4)
+sb tp, 41(t0)
+sw tp, 1168(s11)
+slliw a0, sp, 16
+addi a4, s11, -2032
+sw zero, 0(a4)
