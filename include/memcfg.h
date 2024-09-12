@@ -1,0 +1,3 @@
+#define SDATA 0x80001000
+#define UCODE 0x80008000
+#define UDATA 0x80009000

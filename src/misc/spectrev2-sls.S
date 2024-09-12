@@ -6,7 +6,7 @@
 # a leak gadget. Then, it will ask the victim to jump to `legit_target`.
 # As a result, the victim speculatively jumps to `leak_gadget` instead.
 #------------------------------------------------------------------------------
-#include "../pocs/memcfg.h"
+#include "memcfg.h"
 
 .equ TRAINING_ROUNDS, 1
 .equ LEGIT_FUNC_IDX, 0x0
