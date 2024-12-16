@@ -6,9 +6,9 @@ main:
     li s0, UDATA
     ld s1, 0(s0)
 
-    // access to supervisor mode page, which will
-    // raise a fault
+    // access to supervisor mode page, which will raise a fault
     li s1, SDATA
+    addi s1, s1, 0x10
     lb s1, 0(s1)
     // add offset to user base address
     add s1, s0, s1
