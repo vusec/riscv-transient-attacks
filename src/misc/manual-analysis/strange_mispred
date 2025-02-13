@@ -1,0 +1,147 @@
+init:
+# Bring secret to cache (not needed?)
+# ld x10,data1
+# Untaint the spec. instruction.
+ld x11,func5
+# Prepare immediate for dummy mul/divs.
+li x12, 6
+
+.align 4
+loop:
+# Set x1 to here (ret will return here).
+auipc x1, 0 #
+ld a4, 0(x1)
+
+# Dummy code to slow down the pipeline.
+xori sp, gp, 0
+xori sp, gp, 0
+xori sp, gp, 0
+xori sp, gp, 0
+
+# Further slow down for the spec. load.
+mul gp, gp, x12
+div gp, gp, x12
+mul gp, gp, x12
+div gp, gp, x12
+mul gp, gp, x12
+div gp, gp, x12
+
+# Misspeculated branch.
+beq a4, gp, func5
+# Jump back to loop with a ret.
+jalr zero, x1, 0
+#ret
+
+#nop
+#.dword 0
+
+#.dword 0
+#.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+#.dword 0
+#.dword 0
+#.dword 0
+#.dword 0
+#.dword 0
+#.dword 0
+#.dword 0
+#.dword 0
+#.dword 0
+#.dword 0
+
+#228
+func1:
+xori sp, gp, 0
+nop
+nop
+
+#230
+func2:
+xori sp, gp, 0
+
+#234
+func3:
+xori sp, gp, 0
+
+#238
+func4:
+xori sp, gp, 0
+nop
+nop
+
+#240 -> executed speculatively
+.align 4
+func5:
+ld x10, data2
+# xori sp, gp, 0x30
+
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+.dword 0
+#.dword 0
+nop
+nop
+nop
+nop
+
+.align 8
+data1:
+.dword 0xdeadbeef
+
+data2:
+.dword 0xcacacafe

@@ -1,0 +1,4 @@
+build
+*.hex
+*.crash.json
+*.bin.bin

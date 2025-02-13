@@ -1,0 +1,40 @@
+auipc ra, 0 # 0x80000000
+ld a4, 0(ra)
+add s4, a1, tp
+mv gp, ra
+xori sp, gp, 0
+xori sp, gp, 0
+beq a4, gp, func1 # 0x80000228
+xori sp, gp, 0
+beq a4, gp, func2 # 0x80000230
+beq a4, gp, func3 # 0x80000234
+beq a4, gp, func4 # 0x80000238
+xori sp, gp, 0
+beq a4, gp, func5 # 0x80000240
+ret
+
+# TODO: padding
+
+#0x80000228
+func1:
+xori sp, gp, 0
+nop
+nop
+
+#0x80000230
+func2:
+xori sp, gp, 0
+
+#0x80000234
+func3:
+xori sp, gp, 0
+
+#0x80000238
+func4:
+xori sp, gp, 0
+nop
+nop
+
+#0x80000240
+func5:
+xori sp, gp, 0

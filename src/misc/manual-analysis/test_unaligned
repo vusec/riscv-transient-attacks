@@ -1,0 +1,23 @@
+j begin
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+nop
+begin:
+li t0, 0x800002f0
+lw t2, 0(t0)
+li t0, 0x800002fe
+lw t1, 0(t0)
+addi t1, t1, 1
+lw t2, 0(t1)
