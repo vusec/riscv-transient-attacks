@@ -11,7 +11,7 @@ NODATADIR = build/nodata
 SRCDIR = src
 
 # Programs to compile
-SOURCES = $(wildcard src/**/*.S)
+SOURCES = $(wildcard src/**/*.S) $(wildcard src/misc/**/*.S)
 
 DUMPS = $(patsubst $(SRCDIR)/%.S,$(DUMPDIR)/%.asm,$(SOURCES))
 BINS = $(patsubst $(SRCDIR)/%.S,$(BINDIR)/%.bin,$(SOURCES))
